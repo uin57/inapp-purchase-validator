@@ -4,15 +4,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Builder;
 
+import java.io.IOException;
+
 @Getter
 @NoArgsConstructor
-@Builder
 public abstract class AbstractValidator {
-    private Channel channel;
-    private String receipt;
-    private AbstractReceiptDto abstractReceiptDto;
+    protected Channel channel;
+    protected String receipt;
 
     public abstract boolean onlineValidator();
     public abstract boolean offlineValidator();
-    public abstract AbstractReceiptDto buildDto();
+    public abstract AbstractReceiptDto buildDto() throws IOException;
 }

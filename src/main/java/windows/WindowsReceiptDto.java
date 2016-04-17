@@ -1,66 +1,68 @@
 package windows;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import core.AbstractReceiptDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import windows.serializer.WindowsLocalDateTimeDeserializer;
+import windows.serializer.WindowsLocalDateTimeSerializer;
+
 import java.time.LocalDateTime;
-import java.util.List;
 
-public class WindowsReceiptDto {
+@JacksonXmlRootElement(localName = "Receipt")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+public final class WindowsReceiptDto extends AbstractReceiptDto {
 
-    private Receipt receipt;
+    @JacksonXmlProperty(localName = "Version", isAttribute = true)
+    public String Version;
 
+    @JacksonXmlProperty(localName = "CertificateId", isAttribute = true)
+    public String certificateId;
 
-    public class Receipt {
-        private String xmlns;
-        private float version;
-        private String certificateId;
+    @JacksonXmlProperty(localName = "ProductReceipt")
+    public ProductReceipt productReceipt;
 
-        private ProductReceipt productReceipt;
-        private Signature signature;
-    }
-
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
     public class ProductReceipt {
+        @JacksonXmlProperty(localName = "PurchasePrice", isAttribute = true)
         private String purchasePrice;
+
+        @JacksonXmlProperty(localName = "PurchaseDate", isAttribute = true)
+        @JsonDeserialize(using = WindowsLocalDateTimeDeserializer.class)
+        @JsonSerialize(using = WindowsLocalDateTimeSerializer.class)
         private LocalDateTime purchaseDate;
+
+        @JacksonXmlProperty(localName = "Id", isAttribute = true)
         private String id;
+
+        @JacksonXmlProperty(localName = "AppId", isAttribute = true)
         private String appId;
+
+        @JacksonXmlProperty(localName = "ProductId", isAttribute = true)
         private String productId;
+
+        @JacksonXmlProperty(localName = "ProductType", isAttribute = true)
         private String productType;
+
+        @JacksonXmlProperty(localName = "PublisherUserId", isAttribute = true)
         private String publisherUserId;
+
+        @JacksonXmlProperty(localName = "PublisherDeviceId", isAttribute = true)
         private String publisherDeviceId;
+
+        @JacksonXmlProperty(localName = "MicrosoftProductId", isAttribute = true)
         private String microsoftProductId;
+
+        @JacksonXmlProperty(localName = "MicrosoftAppId", isAttribute = true)
         private String microsoftAppId;
-    }
-
-    public class Signature {
-        private SignedInfo signedInfo;
-        private String signatureValue;
-    }
-
-    public class SignedInfo {
-        private CanonicalizationMethod canonicalizationMethod;
-        private SignatureMethod signatureMethod;
-        private Reference reference;
-    }
-
-    public class CanonicalizationMethod {
-        private String algorithm;
-    }
-
-    public class SignatureMethod {
-        private String algorithm;
-    }
-
-    public class Reference {
-        private String uri;
-        private List<Transform> transforms;
-        private DigestMethod digestMethod;
-        private String digestValue;
-    }
-
-    public class Transform {
-        private String algorithm;
-    }
-
-    public class DigestMethod {
-        private String algorithm;
     }
 }

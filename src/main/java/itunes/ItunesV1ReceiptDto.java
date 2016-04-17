@@ -1,15 +1,23 @@
 package itunes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import core.AbstractReceiptDto;
+import itunes.serializer.ItunesLocalDateTimeDeserializer;
+import itunes.serializer.ItunesLocalDateTimeSerializer;
 
 import java.time.LocalDateTime;
 
-public class ItunesV1ReceiptDto {
+public final class ItunesV1ReceiptDto extends AbstractReceiptDto{
+
     @JsonProperty("original_purchase_date_pst")
+    @JsonDeserialize(using = ItunesLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = ItunesLocalDateTimeSerializer.class)
     private LocalDateTime originalPurchaseDatePst;
 
     @JsonProperty("purchase_date_ms")
-    private LocalDateTime purchaseDateMs;
+    private long purchaseDateMs;
 
     @JsonProperty("unique_identifier")
     private String uniqueIdentifier;
@@ -36,12 +44,18 @@ public class ItunesV1ReceiptDto {
     private String productId;
 
     @JsonProperty("purchase_date")
+    @JsonDeserialize(using = ItunesLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = ItunesLocalDateTimeSerializer.class)
     private LocalDateTime purchaseDate;
 
     @JsonProperty("original_purchase_date")
+    @JsonDeserialize(using = ItunesLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = ItunesLocalDateTimeSerializer.class)
     private LocalDateTime originalPurchaseDate;
 
     @JsonProperty("purchase_date_pst")
+    @JsonDeserialize(using = ItunesLocalDateTimeDeserializer.class)
+    @JsonSerialize(using = ItunesLocalDateTimeSerializer.class)
     private LocalDateTime purchaseDatePst;
 
     @JsonProperty("bid")
@@ -50,3 +64,4 @@ public class ItunesV1ReceiptDto {
     @JsonProperty("original_purchase_date_ms")
     private long originalPurchaseDateMs;
 }
+
