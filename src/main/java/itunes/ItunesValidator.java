@@ -45,6 +45,13 @@ public final class ItunesValidator extends AbstractValidator {
         }
     }
 
+    private String extractReceiptFromResponse(String itunesResponse) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.readTree(itunesResponse);
+        node = node.path("receipt");
+        return mapper.writeValueAsString(node);
+    }
+
     @Override
     public boolean validate() {
 
@@ -52,12 +59,13 @@ public final class ItunesValidator extends AbstractValidator {
             String urlItunes = "https://buy.itunes.apple.com/verifyReceipt";
             int code = -1;
             for (int i = 0; i <= 1; i++) {
-                String itunesResponse = postRequest(urlItunes, receipt);
+                String itunesResponse = postRequest(urlItunes, cipheredReceipt);
                 code = extractStatusCode(itunesResponse);
 
                 switch (code) {
                     case 0:
                         Logger.logMsg(Logger.DEBUG, "the receipt is validated");
+                        receipt = extractReceiptFromResponse(itunesResponse);
                         return true;
                     case 21000:
                         Logger.logMsg(Logger.ERROR, "the cipheredReceipt is unreadable by Itunes");
@@ -141,13 +149,16 @@ public final class ItunesValidator extends AbstractValidator {
             if(code >= 200 && code < 300){
                 return itunesResponse;
             }
-            Logger.logMsg(Logger.ERROR, "wring status code gets from Itunes");
+            Logger.logMsg(Logger.ERROR, "wrong status code gets from Itunes");
             return null;
         } catch (NullPointerException e) {
             Logger.logMsg(Logger.ERROR, "null response gets from Itunes");
             return null;
+        }catch (IOException e){
+            Logger.logMsg(Logger.ERROR, "unable to etablish a connection with the Itunes validation server");
+            return null;
         } catch (Exception e) {
-            Logger.logMsg(Logger.ERROR, "unexpected error code gets from Itunes");
+            Logger.logMsg(Logger.ERROR, "unexpected error encountered while sending the request to Itunes");
             return null;
         } finally {
             close(response);

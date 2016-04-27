@@ -9,6 +9,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.StandardHttpRequestRetryHandler;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @Getter
@@ -18,6 +19,7 @@ public abstract class AbstractValidator {
     protected CloseableHttpClient httpClient;
 
     public abstract boolean validate();
+    public abstract AbstractReceiptDto buildDto() throws IOException;
 
     public AbstractValidator(){
         httpClient = buildHttpClient();

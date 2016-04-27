@@ -3,6 +3,7 @@ package android;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.media.jfxmedia.logging.Logger;
+import core.AbstractReceiptDto;
 import core.AbstractValidator;
 import core.Channel;
 import org.apache.commons.codec.binary.Base64;
@@ -29,7 +30,6 @@ public final class AndroidValidator extends AbstractValidator{
     private static final String url="https://buy.itunes.apple.com/verifyReceipt";
     private String clientId;
     private String clientSecret;
-    private String keyPlayStore;
     private String signature;
     private AndroidReceiptDto receiptDto;
     private PublicKey publicKey;
@@ -39,12 +39,12 @@ public final class AndroidValidator extends AbstractValidator{
 
 
 
-    public AndroidValidator(String receipt, String signature, String keyPlayStore){
+    public AndroidValidator(String receipt, String signature, String keyPlaystore){
         channel = Channel.ANDROID;
         this.receipt = receipt;
         this.signature = signature;
 
-        byte[] publicKeyBase64 = Base64.decodeBase64(keyPlayStore.getBytes());
+        byte[] publicKeyBase64 = Base64.decodeBase64(keyPlaystore.getBytes());
 
         try {
             this.publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(publicKeyBase64));
@@ -55,15 +55,15 @@ public final class AndroidValidator extends AbstractValidator{
         }
     }
 
-    public AndroidValidator(String receipt, String signature, String refreshToken, String clientId, String clientSecret, String keyPlayStore) {
-        this(receipt, signature, keyPlayStore);
+    public AndroidValidator(String receipt, String signature, String keyPlaystore, String clientId, String clientSecret, String refreshToken) {
+        this(receipt, signature, keyPlaystore);
         this.refreshToken = refreshToken;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
-        this.keyPlayStore = keyPlayStore;
     }
 
-    public AndroidReceiptDto buildDto() throws IOException {
+    @Override
+    public AbstractReceiptDto buildDto() throws IOException {
         if(receiptDto == null) {
             ObjectMapper mapper = new ObjectMapper();
             try {
